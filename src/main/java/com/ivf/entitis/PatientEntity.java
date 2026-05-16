@@ -12,7 +12,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "patients", schema = "ivf")
+@Table(name = "patients")
 public class PatientEntity {
 
 	@Id

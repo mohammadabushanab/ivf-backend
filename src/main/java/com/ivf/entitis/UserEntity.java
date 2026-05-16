@@ -3,7 +3,7 @@ package com.ivf.entitis;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users", schema = "ivf")
+@Table(name = "users")
 public class UserEntity {
 
 	@Id

@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "procedure_types", schema = "ivf")
+@Table(name = "procedure_types")
 public class ProcedureTypeEntity {
 
 	@Id

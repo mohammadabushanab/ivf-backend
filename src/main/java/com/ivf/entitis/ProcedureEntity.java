@@ -18,7 +18,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "procedures", schema = "ivf")
+@Table(name = "procedures")
 public class ProcedureEntity {
 
 	@Id
