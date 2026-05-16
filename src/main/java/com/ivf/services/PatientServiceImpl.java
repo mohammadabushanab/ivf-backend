@@ -28,7 +28,7 @@ public class PatientServiceImpl implements PatientService {
 	@Override
 	public List<PatientDTO> findBySaerchCriteria(PatientDTO patientDTO) {
 
-		StringBuilder sql = new StringBuilder("SELECT * FROM ivf.patients WHERE 1=1 ");
+		StringBuilder sql = new StringBuilder("SELECT * FROM patients WHERE 1=1 ");
 
 		Map<String, Object> params = new HashMap<String, Object>();
 

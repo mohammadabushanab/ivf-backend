@@ -36,8 +36,8 @@ public class DashboardServiceImpl implements DashboardService {
 				        pt.id AS procedure_type_id,
 				        pt.name AS procedure_type_name,
 				        COUNT(p.id) AS procedure_count
-				    FROM ivf.procedures p
-				    JOIN ivf.procedure_types pt
+				    FROM procedures p
+				    JOIN procedure_types pt
 				        ON pt.id = p.procedure_type_id
 				    GROUP BY pt.id, pt.name
 				    ORDER BY COUNT(p.id) DESC
@@ -74,8 +74,8 @@ public class DashboardServiceImpl implements DashboardService {
 				            )
 				        ), 0
 				    )
-				    FROM ivf.procedures p
-				    JOIN ivf.procedure_types pt
+				    FROM procedures p
+				    JOIN procedure_types pt
 				        ON pt.id = p.procedure_type_id
 				    WHERE pt.name = :procedureTypeName
 				""");
@@ -100,8 +100,8 @@ public class DashboardServiceImpl implements DashboardService {
 				            )
 				        ), 0
 				    )
-				    FROM ivf.procedures p
-				    JOIN ivf.procedure_types pt
+				    FROM procedures p
+				    JOIN procedure_types pt
 				        ON pt.id = p.procedure_type_id
 				    WHERE pt.name = :procedureTypeName
 				""");
@@ -124,8 +124,8 @@ public class DashboardServiceImpl implements DashboardService {
 				            COALESCE(NULLIF(item ->> 'ampoules', '')::BIGINT, 0)
 				        ), 0
 				    )
-				    FROM ivf.procedures p
-				    JOIN ivf.procedure_types pt
+				    FROM procedures p
+				    JOIN procedure_types pt
 				        ON pt.id = p.procedure_type_id
 				    CROSS JOIN jsonb_array_elements(
 				        COALESCE(p.values::jsonb -> 'freezingRows', '[]'::jsonb)

@@ -46,34 +46,34 @@ public class ProcedureServiceImpl implements ProcedureService {
 	@Override
 	public List<ProcedureDTO> findBySaerchCriteria(ProcedureDTO procedureDTO) {
 
-		StringBuilder sql = new StringBuilder("SELECT ivf.procedures.* FROM ivf.procedures ");
+		StringBuilder sql = new StringBuilder("SELECT procedures.* FROM procedures ");
 
-		sql.append("INNER JOIN ivf.procedure_types ");
-		sql.append("ON ivf.procedure_types.id = ivf.procedures.procedure_type_id ");
+		sql.append("INNER JOIN procedure_types ");
+		sql.append("ON procedure_types.id = procedures.procedure_type_id ");
 
-		sql.append("INNER JOIN ivf.patients ");
-		sql.append("ON ivf.patients.id = ivf.procedures.patient_id ");
+		sql.append("INNER JOIN patients ");
+		sql.append("ON patients.id = procedures.patient_id ");
 
-		sql.append("LEFT JOIN ivf.users physician ");
-		sql.append("ON physician.id = ivf.procedures.physician_id ");
+		sql.append("LEFT JOIN users physician ");
+		sql.append("ON physician.id = procedures.physician_id ");
 		
-		sql.append("LEFT JOIN ivf.users embryologist ");
-		sql.append("ON embryologist.id = ivf.procedures.embryologist_id ");		
+		sql.append("LEFT JOIN users embryologist ");
+		sql.append("ON embryologist.id = procedures.embryologist_id ");		
 
 		sql.append("WHERE 1=1 ");
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		
 		if (procedureDTO.getIsPaid()) {
-			sql.append("AND ivf.procedures.payment_status = 'Paid' ");
+			sql.append("AND procedures.payment_status = 'Paid' ");
 		}
 		
 		if (procedureDTO.getIsReport()) {
-			sql.append("AND ivf.procedures.values != '{}' ");
+			sql.append("AND procedures.values != '{}' ");
 		}		
 
 		if (procedureDTO.getId() != null) {
-			sql.append("AND ivf.procedures.id = :id ");
+			sql.append("AND procedures.id = :id ");
 
 			params.put("id", procedureDTO.getId());
 		}
@@ -81,42 +81,42 @@ public class ProcedureServiceImpl implements ProcedureService {
 			if (procedureDTO.getPatientDTO() != null) {
 				if (procedureDTO.getPatientDTO().getNationalId() != null && !procedureDTO.getPatientDTO().getNationalId().isEmpty()) {
 
-					sql.append("AND ivf.patients.national_id = :nationalId ");
+					sql.append("AND patients.national_id = :nationalId ");
 
 					params.put("nationalId", procedureDTO.getPatientDTO().getNationalId());
 				}
 
 				if (procedureDTO.getPatientDTO().getName() != null && !procedureDTO.getPatientDTO().getName().isEmpty()) {
 
-					sql.append("AND ivf.patients.name = :name ");
+					sql.append("AND patients.name = :name ");
 
 					params.put("name", procedureDTO.getPatientDTO().getName());
 				}
 
 				if (procedureDTO.getPatientDTO().getPhoneNumber() != null && !procedureDTO.getPatientDTO().getPhoneNumber().isEmpty()) {
 
-					sql.append("AND ivf.patients.phone_number = :phoneNumber ");
+					sql.append("AND patients.phone_number = :phoneNumber ");
 
 					params.put("phoneNumber", procedureDTO.getPatientDTO().getPhoneNumber());
 				}
 
 				if (procedureDTO.getPatientDTO().getHusbandNationalId() != null && !procedureDTO.getPatientDTO().getHusbandNationalId().isEmpty()) {
 
-					sql.append("AND ivf.patients.husband_national_id = :husbandNationalId ");
+					sql.append("AND patients.husband_national_id = :husbandNationalId ");
 
 					params.put("husbandNationalId", procedureDTO.getPatientDTO().getHusbandNationalId());
 				}
 
 				if (procedureDTO.getPatientDTO().getHusbandName() != null && !procedureDTO.getPatientDTO().getHusbandName().isEmpty()) {
 
-					sql.append("AND ivf.patients.husband_name = :husbandName ");
+					sql.append("AND patients.husband_name = :husbandName ");
 
 					params.put("husbandName", procedureDTO.getPatientDTO().getHusbandName());
 				}
 
 				if (procedureDTO.getPatientDTO().getHusbandPhoneNumber() != null && !procedureDTO.getPatientDTO().getHusbandPhoneNumber().isEmpty()) {
 
-					sql.append("AND ivf.patients.husband_phone_number = :husbandPhoneNumber ");
+					sql.append("AND patients.husband_phone_number = :husbandPhoneNumber ");
 
 					params.put("husbandPhoneNumber", procedureDTO.getPatientDTO().getHusbandPhoneNumber());
 				}

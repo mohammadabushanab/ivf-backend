@@ -18,7 +18,6 @@ public class DashboardController {
 
 	@GetMapping("/find-all")
 	public ResponseEntity<DashboardResponseDTO> getDashboardData() {
-		System.out.println("getDashboardData");
 		return ResponseEntity.ok(dashboardService.getDashboardData());
 	}
 
