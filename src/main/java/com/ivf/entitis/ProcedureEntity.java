@@ -1,5 +1,6 @@
 package com.ivf.entitis;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -54,6 +55,12 @@ public class ProcedureEntity {
 
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
+
+	@Column(name = "scheduled_date")
+	private LocalDateTime scheduledDate;
+
+	@Column(name = "notes", columnDefinition = "TEXT")
+	private String notes;
 
 	@PrePersist
 	public void onCreate() {
@@ -138,12 +145,31 @@ public class ProcedureEntity {
 		this.modifiedDate = modifiedDate;
 	}
 
+	public LocalDateTime getScheduledDate() {
+		return scheduledDate;
+	}
+
+	public void setScheduledDate(LocalDateTime scheduledDate) {
+		this.scheduledDate = scheduledDate;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
 	@Override
 	public String toString() {
 		return "ProcedureEntity [id=" + id + ", values=" + values + ", paymentStatus=" + paymentStatus
 				+ ", procedureTypeEntity=" + procedureTypeEntity + ", patientEntity=" + patientEntity
 				+ ", physicianEntity=" + physicianEntity + ", embryologistEntity=" + embryologistEntity
-				+ ", createdDate=" + createdDate + ", modifiedDate=" + modifiedDate + "]";
+				+ ", createdDate=" + createdDate + ", modifiedDate=" + modifiedDate + ", scheduledDate=" + scheduledDate
+				+ ", notes=" + notes + "]";
 	}
+	
+	
 
 }

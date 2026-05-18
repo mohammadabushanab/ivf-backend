@@ -78,6 +78,21 @@ public class ProcedureServiceImpl implements ProcedureService {
 			params.put("id", procedureDTO.getId());
 		}
 		else {
+			if(procedureDTO.getFromDate() != null  && procedureDTO.getToDate() != null) {
+				
+				if(procedureDTO.getDateSearchType() != null && !procedureDTO.getDateSearchType().isEmpty() ) {
+					if(procedureDTO.getDateSearchType().equals("scheduledDate") ) {
+						sql.append("AND procedures.scheduled_date >= :fromDate AND procedures.scheduled_date <= :toDate ");
+					}
+					else {
+						sql.append("AND procedures.created_date >= :fromDate AND procedures.created_date <= :toDate ");
+					}
+				}
+								
+
+				params.put("fromDate", procedureDTO.getFromDate().atStartOfDay());
+				params.put("toDate", procedureDTO.getToDate().atTime(23, 59, 59));
+			}
 			if (procedureDTO.getPatientDTO() != null) {
 				if (procedureDTO.getPatientDTO().getNationalId() != null && !procedureDTO.getPatientDTO().getNationalId().isEmpty()) {
 
@@ -122,6 +137,15 @@ public class ProcedureServiceImpl implements ProcedureService {
 				}
 
 			}
+			
+			if (procedureDTO.getProcedureTypeDTO() != null) {
+				if (procedureDTO.getProcedureTypeDTO().getName() != null && !procedureDTO.getProcedureTypeDTO().getName().isEmpty()) {
+
+					sql.append("AND procedure_types.name = :procedureTypesName ");
+
+					params.put("procedureTypesName", procedureDTO.getProcedureTypeDTO().getName());
+				}
+			}
 
 		}
 		
@@ -159,6 +183,8 @@ public class ProcedureServiceImpl implements ProcedureService {
 
 		entity.setValues(procedureDTO.getValues());		
 		entity.setPaymentStatus(procedureDTO.getPaymentStatus());
+		entity.setScheduledDate(procedureDTO.getScheduledDate());
+		entity.setNotes(procedureDTO.getNotes());
 
 		if (procedureDTO.getProcedureTypeDTO() != null) {
 
@@ -210,6 +236,8 @@ public class ProcedureServiceImpl implements ProcedureService {
 		procedureDTO.setPaymentStatus(procedureEntity.getPaymentStatus());
 		procedureDTO.setCreatedDate(procedureEntity.getCreatedDate());
 		procedureDTO.setModifiedDate(procedureEntity.getModifiedDate());
+		procedureDTO.setScheduledDate(procedureEntity.getScheduledDate());
+		procedureDTO.setNotes(procedureEntity.getNotes());
 
 		if (procedureEntity.getProcedureTypeEntity() != null) {
 
@@ -310,6 +338,8 @@ public class ProcedureServiceImpl implements ProcedureService {
 		procedureEntity.setPaymentStatus(procedureDTO.getPaymentStatus());
 		procedureEntity.setCreatedDate(procedureDTO.getCreatedDate());
 		procedureEntity.setModifiedDate(procedureDTO.getModifiedDate());
+		procedureEntity.setScheduledDate(procedureDTO.getScheduledDate());
+		procedureEntity.setNotes(procedureDTO.getNotes());
 
 		if (procedureDTO.getProcedureTypeDTO() != null) {
 

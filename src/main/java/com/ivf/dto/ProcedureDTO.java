@@ -1,5 +1,6 @@
 package com.ivf.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -29,9 +30,19 @@ public class ProcedureDTO {
 
 	private LocalDateTime modifiedDate;
 
+	private LocalDateTime scheduledDate;
+
 	private Boolean isPaid;
 
 	private Boolean isReport;
+
+	private String dateSearchType;
+
+	private LocalDate fromDate;
+
+	private LocalDate toDate;
+
+	private String notes;
 
 	public Long getId() {
 		return id;
@@ -121,12 +132,54 @@ public class ProcedureDTO {
 		this.isReport = isReport;
 	}
 
+	public LocalDate getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(LocalDate fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public LocalDate getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(LocalDate toDate) {
+		this.toDate = toDate;
+	}
+
+	public LocalDateTime getScheduledDate() {
+		return scheduledDate;
+	}
+
+	public void setScheduledDate(LocalDateTime scheduledDate) {
+		this.scheduledDate = scheduledDate;
+	}
+
+	public String getDateSearchType() {
+		return dateSearchType;
+	}
+
+	public void setDateSearchType(String dateSearchType) {
+		this.dateSearchType = dateSearchType;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
 	@Override
 	public String toString() {
 		return "ProcedureDTO [id=" + id + ", values=" + values + ", paymentStatus=" + paymentStatus
 				+ ", procedureTypeDTO=" + procedureTypeDTO + ", patientDTO=" + patientDTO + ", physicianDTO="
 				+ physicianDTO + ", embryologistDTO=" + embryologistDTO + ", createdDate=" + createdDate
-				+ ", modifiedDate=" + modifiedDate + ", isPaid=" + isPaid + ", isReport=" + isReport + "]";
+				+ ", modifiedDate=" + modifiedDate + ", scheduledDate=" + scheduledDate + ", isPaid=" + isPaid
+				+ ", isReport=" + isReport + ", dateSearchType=" + dateSearchType + ", fromDate=" + fromDate
+				+ ", toDate=" + toDate + ", notes=" + notes + "]";
 	}
 
 }

@@ -73,6 +73,13 @@ public class PatientServiceImpl implements PatientService {
 
 			params.put("husbandPhoneNumber", patientDTO.getHusbandPhoneNumber());
 		}
+		
+		if(patientDTO.getFromDate() != null  && patientDTO.getToDate() != null) {
+			sql.append("AND created_date >= :fromDate AND created_date <= :toDate ");
+
+			params.put("fromDate", patientDTO.getFromDate().atStartOfDay());
+			params.put("toDate", patientDTO.getToDate().atTime(23, 59, 59));
+		}		
 
 		Query query = entityManager.createNativeQuery(sql.toString(), PatientEntity.class);
 

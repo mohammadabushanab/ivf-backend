@@ -1,5 +1,6 @@
 package com.ivf.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class PatientDTO {
@@ -23,6 +24,10 @@ public class PatientDTO {
 	private LocalDateTime createdDate;
 
 	private LocalDateTime modifiedDate;
+
+	private LocalDate fromDate;
+
+	private LocalDate toDate;
 
 	public Long getId() {
 		return id;
@@ -104,12 +109,28 @@ public class PatientDTO {
 		this.modifiedDate = modifiedDate;
 	}
 
+	public LocalDate getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(LocalDate fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public LocalDate getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(LocalDate toDate) {
+		this.toDate = toDate;
+	}
+
 	@Override
 	public String toString() {
 		return "PatientDTO [id=" + id + ", name=" + name + ", nationalId=" + nationalId + ", phoneNumber=" + phoneNumber
 				+ ", age=" + age + ", husbandName=" + husbandName + ", husbandNationalId=" + husbandNationalId
 				+ ", husbandPhoneNumber=" + husbandPhoneNumber + ", createdDate=" + createdDate + ", modifiedDate="
-				+ modifiedDate + "]";
+				+ modifiedDate + ", fromDate=" + fromDate + ", toDate=" + toDate + "]";
 	}
 
 }
