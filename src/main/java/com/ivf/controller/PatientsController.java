@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,10 +21,15 @@ public class PatientsController {
 	
 	@Autowired
 	private PatientService patientService;
+	
+	@GetMapping("/find-total")
+	public ResponseEntity<Long> findTotal() {
+		return ResponseEntity.ok(patientService.findTotal());
+	}
 
 	@PostMapping("/find-by-search-criteria")
 	public ResponseEntity<List<PatientDTO>> findBySearchCriteria(@RequestBody PatientDTO request) {
-		return ResponseEntity.ok(patientService.findBySaerchCriteria(request));
+		return ResponseEntity.ok(patientService.findBySearchCriteria(request));
 	}
 	
 	@PostMapping("/add")

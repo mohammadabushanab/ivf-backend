@@ -31,7 +31,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
 			String authHeader = request.getHeader("Authorization");
 
-			if (request.getMethod().equals("OPTIONS")|| request.getRequestURI().contains("/api/auth/login")) {
+			if (request.getMethod().equals("OPTIONS")|| request.getRequestURI().contains("/api/auth/login") || request.getRequestURI().startsWith("/ws")) {
+				
+				System.out.println("request.getRequestURI() : " + request.getRequestURI());
 
 				filterChain.doFilter(request, response);
 				return;

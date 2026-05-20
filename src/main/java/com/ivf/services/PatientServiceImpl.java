@@ -26,7 +26,7 @@ public class PatientServiceImpl implements PatientService {
 	private EntityManager entityManager;
 
 	@Override
-	public List<PatientDTO> findBySaerchCriteria(PatientDTO patientDTO) {
+	public List<PatientDTO> findBySearchCriteria(PatientDTO patientDTO) {
 
 		StringBuilder sql = new StringBuilder("SELECT * FROM patients WHERE 1=1 ");
 
@@ -41,9 +41,9 @@ public class PatientServiceImpl implements PatientService {
 
 		if (patientDTO.getName() != null && !patientDTO.getName().isEmpty()) {
 
-			sql.append("AND name = :name ");
+			sql.append("AND LOWER(name) like LOWER(:name) ");
 
-			params.put("name", patientDTO.getName());
+			params.put("name", "%" + patientDTO.getName() + "%");
 		}
 
 		if (patientDTO.getPhoneNumber() != null && !patientDTO.getPhoneNumber().isEmpty()) {
@@ -61,10 +61,10 @@ public class PatientServiceImpl implements PatientService {
 		}
 
 		if (patientDTO.getHusbandName() != null && !patientDTO.getHusbandName().isEmpty()) {
+			
+			sql.append("AND LOWER(husband_name) like LOWER(:husbandName) ");
 
-			sql.append("AND husband_name = :husbandName ");
-
-			params.put("husbandName", patientDTO.getHusbandName());
+			params.put("name", "%" + patientDTO.getHusbandName() + "%");			
 		}
 
 		if (patientDTO.getHusbandPhoneNumber() != null && !patientDTO.getHusbandPhoneNumber().isEmpty()) {
@@ -143,6 +143,10 @@ public class PatientServiceImpl implements PatientService {
 	public void delete(PatientDTO patientDTO) {
 	    patientRepository.deleteById(patientDTO.getId());
 	}
+	
+	public Long findTotal() {
+		return patientRepository.count();
+	}
 
 	private PatientDTO mapToDTO(PatientEntity patientEntity) {
 		
@@ -181,8 +185,6 @@ public class PatientServiceImpl implements PatientService {
 	    patientEntity.setHusbandName(patientDTO.getHusbandName());
 	    patientEntity.setHusbandNationalId(patientDTO.getHusbandNationalId());
 	    patientEntity.setHusbandPhoneNumber(patientDTO.getHusbandPhoneNumber());
-	    patientEntity.setCreatedDate(patientDTO.getCreatedDate());
-	    patientEntity.setModifiedDate(patientDTO.getModifiedDate());
 
 	    return patientEntity;
 	}

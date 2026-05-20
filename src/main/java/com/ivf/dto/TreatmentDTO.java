@@ -1,0 +1,87 @@
+package com.ivf.dto;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class TreatmentDTO {
+
+	private Long id;
+
+	private Map<String, Object> values;
+
+	private String type;
+
+	private LocalDateTime createdDate;
+
+	private LocalDateTime modifiedDate;
+
+	private boolean isDeleted;
+
+	@JsonProperty("patient")
+	private PatientDTO patientDTO;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Map<String, Object> getValues() {
+		return values;
+	}
+
+	public void setValues(Map<String, Object> values) {
+		this.values = values;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public LocalDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(LocalDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
+	public PatientDTO getPatientDTO() {
+		return patientDTO;
+	}
+
+	public void setPatientDTO(PatientDTO patientDTO) {
+		this.patientDTO = patientDTO;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	@Override
+	public String toString() {
+		return "TreatmentDTO [id=" + id + ", values=" + values + ", type=" + type + ", createdDate=" + createdDate
+				+ ", modifiedDate=" + modifiedDate + ", isDeleted=" + isDeleted + ", patientDTO=" + patientDTO + "]";
+	}
+
+}
