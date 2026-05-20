@@ -128,7 +128,7 @@ public class FreezingServiceImpl implements FreezingService {
 
 	    Map<String, Object> params = new HashMap<>();
 
-        sql.append("AND freezing.type = :type ");
+        sql.append("WHERE freezing.type = :type ");
         params.put("type", freezingDTO.getType());
 
 	    Query query = entityManager.createNativeQuery(sql.toString());
