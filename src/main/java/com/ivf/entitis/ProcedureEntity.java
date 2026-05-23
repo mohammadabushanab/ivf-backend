@@ -61,6 +61,9 @@ public class ProcedureEntity {
 	@Column(name = "notes", columnDefinition = "TEXT")
 	private String notes;
 
+	@Column(name = "status")
+	private String status;
+
 	@PrePersist
 	public void onCreate() {
 		this.createdDate = LocalDateTime.now();
@@ -160,15 +163,21 @@ public class ProcedureEntity {
 		this.notes = notes;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "ProcedureEntity [id=" + id + ", values=" + values + ", paymentStatus=" + paymentStatus
 				+ ", procedureTypeEntity=" + procedureTypeEntity + ", patientEntity=" + patientEntity
 				+ ", physicianEntity=" + physicianEntity + ", embryologistEntity=" + embryologistEntity
 				+ ", createdDate=" + createdDate + ", modifiedDate=" + modifiedDate + ", scheduledDate=" + scheduledDate
-				+ ", notes=" + notes + "]";
+				+ ", notes=" + notes + ", status=" + status + "]";
 	}
-	
-	
 
 }

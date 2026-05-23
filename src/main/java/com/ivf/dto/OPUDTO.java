@@ -15,6 +15,8 @@ public class OPUDTO {
 
 	private LocalDateTime modifiedDate;
 
+	private String status;
+
 	private boolean isDeleted;
 
 	@JsonProperty("patient")
@@ -68,10 +70,18 @@ public class OPUDTO {
 		this.isDeleted = isDeleted;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "OPUDTO [id=" + id + ", values=" + values + ", createdDate=" + createdDate + ", modifiedDate="
-				+ modifiedDate + ", isDeleted=" + isDeleted + ", patientDTO=" + patientDTO + "]";
+				+ modifiedDate + ", status=" + status + ", isDeleted=" + isDeleted + ", patientDTO=" + patientDTO + "]";
 	}
 
 }

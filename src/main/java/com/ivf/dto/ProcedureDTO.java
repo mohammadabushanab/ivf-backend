@@ -32,10 +32,6 @@ public class ProcedureDTO {
 
 	private LocalDateTime scheduledDate;
 
-	private Boolean isPaid;
-
-	private Boolean isReport;
-
 	private String dateSearchType;
 
 	private LocalDate fromDate;
@@ -43,6 +39,8 @@ public class ProcedureDTO {
 	private LocalDate toDate;
 
 	private String notes;
+
+	private String status;
 
 	public Long getId() {
 		return id;
@@ -116,20 +114,20 @@ public class ProcedureDTO {
 		this.modifiedDate = modifiedDate;
 	}
 
-	public Boolean getIsPaid() {
-		return isPaid;
+	public LocalDateTime getScheduledDate() {
+		return scheduledDate;
 	}
 
-	public void setIsPaid(Boolean isPaid) {
-		this.isPaid = isPaid;
+	public void setScheduledDate(LocalDateTime scheduledDate) {
+		this.scheduledDate = scheduledDate;
 	}
 
-	public Boolean getIsReport() {
-		return isReport;
+	public String getDateSearchType() {
+		return dateSearchType;
 	}
 
-	public void setIsReport(Boolean isReport) {
-		this.isReport = isReport;
+	public void setDateSearchType(String dateSearchType) {
+		this.dateSearchType = dateSearchType;
 	}
 
 	public LocalDate getFromDate() {
@@ -148,22 +146,6 @@ public class ProcedureDTO {
 		this.toDate = toDate;
 	}
 
-	public LocalDateTime getScheduledDate() {
-		return scheduledDate;
-	}
-
-	public void setScheduledDate(LocalDateTime scheduledDate) {
-		this.scheduledDate = scheduledDate;
-	}
-
-	public String getDateSearchType() {
-		return dateSearchType;
-	}
-
-	public void setDateSearchType(String dateSearchType) {
-		this.dateSearchType = dateSearchType;
-	}
-
 	public String getNotes() {
 		return notes;
 	}
@@ -172,14 +154,22 @@ public class ProcedureDTO {
 		this.notes = notes;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "ProcedureDTO [id=" + id + ", values=" + values + ", paymentStatus=" + paymentStatus
 				+ ", procedureTypeDTO=" + procedureTypeDTO + ", patientDTO=" + patientDTO + ", physicianDTO="
 				+ physicianDTO + ", embryologistDTO=" + embryologistDTO + ", createdDate=" + createdDate
-				+ ", modifiedDate=" + modifiedDate + ", scheduledDate=" + scheduledDate + ", isPaid=" + isPaid
-				+ ", isReport=" + isReport + ", dateSearchType=" + dateSearchType + ", fromDate=" + fromDate
-				+ ", toDate=" + toDate + ", notes=" + notes + "]";
+				+ ", modifiedDate=" + modifiedDate + ", scheduledDate=" + scheduledDate + ", dateSearchType="
+				+ dateSearchType + ", fromDate=" + fromDate + ", toDate=" + toDate + ", notes=" + notes + ", status="
+				+ status + "]";
 	}
 
 }

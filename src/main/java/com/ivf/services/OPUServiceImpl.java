@@ -92,6 +92,8 @@ public class OPUServiceImpl implements OPUService {
 		
 		entity.setValues(opuDTO.getValues());
 
+		entity.setStatus(opuDTO.getStatus());
+		
 		if (opuDTO.getPatientDTO() != null) {
 
 			PatientEntity patientEntity = patientRepository.findById(opuDTO.getPatientDTO().getId())
@@ -133,6 +135,7 @@ public class OPUServiceImpl implements OPUService {
 		opuDTO.setValues(opuEntity.getValues());
 		opuDTO.setCreatedDate(opuEntity.getCreatedDate());
 		opuDTO.setModifiedDate(opuEntity.getModifiedDate());
+		opuDTO.setStatus(opuEntity.getStatus());
 
 		if (opuEntity.getPatientEntity() != null) {
 
@@ -173,6 +176,8 @@ public class OPUServiceImpl implements OPUService {
 		OPUEntity opuEntity = new OPUEntity();
 
 		opuEntity.setValues(opuDTO.getValues());
+		
+		opuEntity.setStatus(opuDTO.getStatus());
 
 		if (opuDTO.getPatientDTO() != null && opuDTO.getPatientDTO().getId() != null) {
 

@@ -1,5 +1,6 @@
 package com.ivf.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,28 @@ public class FreezingServiceImpl implements FreezingService {
 	@Override
 	public List<FreezingDTO> findBySearchCriteria(FreezingDTO freezingDTO) {
 
-		StringBuilder sql = new StringBuilder("SELECT freezing.* FROM freezing ");
+		System.out.println(freezingDTO);
+
+		StringBuilder sql = new StringBuilder();
+
+		sql.append("SELECT ");
+		sql.append("MAX(freezing.id) AS id, ");
+		sql.append("freezing.type AS type, ");
+		sql.append("COALESCE(SUM(freezing.total), 0) AS total, ");
+		sql.append("COALESCE(SUM(freezing.remaining), 0) AS remaining, ");
+		sql.append("STRING_AGG(DISTINCT NULLIF(freezing.dewar, ''), ', ') AS dewar, ");
+		sql.append("STRING_AGG(DISTINCT NULLIF(freezing.canister, ''), ', ') AS canister, ");
+		sql.append("STRING_AGG(DISTINCT NULLIF(freezing.notes, ''), ', ') AS notes, ");
+		sql.append("MAX(freezing.date) AS date, ");
+		sql.append("patients.id AS patient_id, ");
+		sql.append("patients.name AS patient_name, ");
+		sql.append("patients.national_id AS national_id, ");
+		sql.append("patients.phone_number AS phone_number, ");
+		sql.append("patients.age AS age, ");
+		sql.append("patients.husband_name AS husband_name, ");
+		sql.append("patients.husband_national_id AS husband_national_id, ");
+		sql.append("patients.husband_phone_number AS husband_phone_number ");
+		sql.append("FROM freezing ");
 
 		sql.append("INNER JOIN patients ");
 		sql.append("ON patients.id = freezing.patient_id ");
@@ -51,16 +73,19 @@ public class FreezingServiceImpl implements FreezingService {
 		}
 
 		if (freezingDTO.getPatientDTO() != null) {
-			if (freezingDTO.getPatientDTO().getNationalId() != null && !freezingDTO.getPatientDTO().getNationalId().isEmpty()) {
+
+			if (freezingDTO.getPatientDTO().getNationalId() != null
+					&& !freezingDTO.getPatientDTO().getNationalId().isEmpty()) {
 
 				sql.append("AND patients.national_id = :nationalId ");
 
 				params.put("nationalId", freezingDTO.getPatientDTO().getNationalId());
 			}
 
-			if (freezingDTO.getPatientDTO().getName() != null && !freezingDTO.getPatientDTO().getName().isEmpty()) {
+			if (freezingDTO.getPatientDTO().getName() != null
+					&& !freezingDTO.getPatientDTO().getName().isEmpty()) {
 
-				sql.append("AND LOWER(patients.name) like LOWER(:husbandName) ");
+				sql.append("AND LOWER(patients.name) like LOWER(:name) ");
 
 				params.put("name", "%" + freezingDTO.getPatientDTO().getName() + "%");
 			}
@@ -96,22 +121,65 @@ public class FreezingServiceImpl implements FreezingService {
 
 				params.put("husbandPhoneNumber", freezingDTO.getPatientDTO().getHusbandPhoneNumber());
 			}
-
 		}
 
-		Query query = entityManager.createNativeQuery(sql.toString(), FreezingEntity.class);
+		sql.append("GROUP BY ");
+		sql.append("freezing.type, ");
+		sql.append("patients.id ");
+
+		sql.append("ORDER BY MAX(freezing.date) DESC ");
+
+		Query query = entityManager.createNativeQuery(sql.toString());
 
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
 			query.setParameter(entry.getKey(), entry.getValue());
 		}
 
-		List<FreezingEntity> freezingEntities = query.getResultList();
+		List<Object[]> results = query.getResultList();
 
 		List<FreezingDTO> freezingDTOs = new ArrayList<FreezingDTO>();
 
-		if (freezingEntities != null) {
-			for (FreezingEntity freezingEntity : freezingEntities) {
-				freezingDTOs.add(mapToDTO(freezingEntity));
+		if (results != null) {
+
+			for (Object[] row : results) {
+
+				FreezingDTO dto = new FreezingDTO();
+
+				dto.setId(row[0] != null ? ((Number) row[0]).longValue() : null);
+				dto.setType(row[1] != null ? row[1].toString() : null);
+				dto.setTotal(row[2] != null ? ((Number) row[2]).longValue() : 0L);
+				dto.setRemaining(row[3] != null ? ((Number) row[3]).longValue() : 0L);
+				dto.setDewar(row[4] != null ? row[4].toString() : null);
+				dto.setCanister(row[5] != null ? row[5].toString() : null);
+				dto.setNotes(row[6] != null ? row[6].toString() : null);
+
+				if (row[7] != null) {
+					dto.setDate((LocalDateTime) row[7]);
+				}
+
+				PatientDTO patientDTO = new PatientDTO();
+
+				if (row[8] != null) {
+					patientDTO.setId(((Number) row[8]).longValue());
+				}
+
+				patientDTO.setName(row[9] != null ? row[9].toString() : null);
+
+				patientDTO.setNationalId(row[10] != null ? row[10].toString() : null);
+
+				patientDTO.setPhoneNumber(row[11] != null ? row[11].toString() : null);
+
+				patientDTO.setAge(row[12] != null ? row[12].toString() : null);
+
+				patientDTO.setHusbandName(row[13] != null ? row[13].toString() : null);
+
+				patientDTO.setHusbandNationalId(row[14] != null ? row[14].toString() : null);
+
+				patientDTO.setHusbandPhoneNumber(row[15] != null ? row[15].toString() : null);
+
+				dto.setPatientDTO(patientDTO);
+
+				freezingDTOs.add(dto);
 			}
 		}
 

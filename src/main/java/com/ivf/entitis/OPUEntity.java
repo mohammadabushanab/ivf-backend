@@ -40,6 +40,8 @@ public class OPUEntity {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 
+	private String status;
+
 	@PrePersist
 	public void onCreate() {
 		this.createdDate = LocalDateTime.now();
@@ -91,10 +93,18 @@ public class OPUEntity {
 		this.modifiedDate = modifiedDate;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "OPUEntity [id=" + id + ", values=" + values + ", patientEntity=" + patientEntity + ", createdDate="
-				+ createdDate + ", modifiedDate=" + modifiedDate + "]";
+				+ createdDate + ", modifiedDate=" + modifiedDate + ", status=" + status + "]";
 	}
 
 }

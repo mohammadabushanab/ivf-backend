@@ -72,12 +72,16 @@ public class ProcedureServiceImpl implements ProcedureService {
 
 		Map<String, Object> params = new HashMap<String, Object>();
 
-		if (procedureDTO.getIsPaid()) {
-			sql.append("AND procedures.payment_status = 'Paid' ");
+		if (procedureDTO.getPaymentStatus() != null && !procedureDTO.getPaymentStatus().isEmpty()) {
+			sql.append("AND procedures.payment_status = :paymentStatus ");
+
+			params.put("paymentStatus", procedureDTO.getPaymentStatus());
 		}
 
-		if (procedureDTO.getIsReport()) {
-			sql.append("AND procedures.values != '{}' ");
+		if (procedureDTO.getStatus() != null && !procedureDTO.getStatus().isEmpty()) {
+			sql.append("AND procedures.status = :status ");
+
+			params.put("status", procedureDTO.getStatus());
 		}
 
 		if (procedureDTO.getId() != null) {
@@ -201,6 +205,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 		entity.setPaymentStatus(procedureDTO.getPaymentStatus());
 		entity.setScheduledDate(procedureDTO.getScheduledDate());
 		entity.setNotes(procedureDTO.getNotes());
+		entity.setStatus(procedureDTO.getStatus());
 
 		if (procedureDTO.getProcedureTypeDTO() != null) {
 
@@ -300,6 +305,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 		procedureDTO.setModifiedDate(procedureEntity.getModifiedDate());
 		procedureDTO.setScheduledDate(procedureEntity.getScheduledDate());
 		procedureDTO.setNotes(procedureEntity.getNotes());
+		procedureDTO.setStatus(procedureEntity.getStatus());
 
 		if (procedureEntity.getProcedureTypeEntity() != null) {
 
@@ -400,6 +406,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 		procedureEntity.setPaymentStatus(procedureDTO.getPaymentStatus());
 		procedureEntity.setScheduledDate(procedureDTO.getScheduledDate());
 		procedureEntity.setNotes(procedureDTO.getNotes());
+		procedureEntity.setStatus(procedureDTO.getStatus());
 
 		if (procedureDTO.getProcedureTypeDTO() != null) {
 
@@ -451,6 +458,8 @@ public class ProcedureServiceImpl implements ProcedureService {
 			return;
 		}
 
+		Map<String, Object> values = procedureEntity.getValues();
+
 		String procedureTypeName = procedureEntity.getProcedureTypeEntity().getName();
 
 		if (procedureTypeName == null && procedureEntity.getProcedureTypeEntity().getId() != null) {
@@ -462,13 +471,22 @@ public class ProcedureServiceImpl implements ProcedureService {
 			}
 		}
 
-		String type = getFreezingType(procedureTypeName);
+		String type = getFreezingType(procedureTypeName, values);
 
 		if (type == null) {
 			return;
 		}
 
-		Map<String, Object> values = procedureEntity.getValues();
+		if ("BOTH".equals(type)) {
+			saveFreezing(procedureEntity, "EGG", values);
+			saveFreezing(procedureEntity, "EMBRYO", values);
+			return;
+		}
+
+		saveFreezing(procedureEntity, type, values);
+	}
+
+	private void saveFreezing(ProcedureEntity procedureEntity, String type, Map<String, Object> values) {
 
 		Long total = getTotal(type, values);
 		Long thawingRemaining = getThawingRemaining(type, values);
@@ -484,28 +502,56 @@ public class ProcedureServiceImpl implements ProcedureService {
 
 		freezingEntity.setType(type);
 		freezingEntity.setPatientEntity(procedureEntity.getPatientEntity());
-		freezingEntity.setDate(getDate(values.get("freezingDate")));
+
+		if ("EGG".equals(type)) {
+			freezingEntity.setDate(getDate(values.get("eggFreezingDate")));
+			freezingEntity.setDewar(getString(values.get("eggDewar")));
+			freezingEntity.setCanister(getString(values.get("eggCanisterNo")));
+		} else if ("EMBRYO".equals(type)) {
+			freezingEntity.setDate(getDate(values.get("embryoFreezingDate")));
+			freezingEntity.setDewar(getString(values.get("embryoDewar")));
+			freezingEntity.setCanister(getString(values.get("embryoCanisterNo")));
+		} else if ("SPERM".equals(type)) {
+			freezingEntity.setDate(getDate(values.get("spermFreezingDate")));
+			freezingEntity.setDewar(getString(values.get("spermDewar")));
+			freezingEntity.setCanister(getString(values.get("spermCanisterNo")));
+		} else {
+			freezingEntity.setDate(getDate(values.get("ovarianTissueCryopreservationFreezingDate")));
+			freezingEntity.setDewar(getString(values.get("ovarianTissueCryopreservationDewar")));
+			freezingEntity.setCanister(getString(values.get("ovarianTissueCryopreservationCanisterNo")));
+		}
+
 		freezingEntity.setTotal(total);
 		freezingEntity.setRemaining(hasThawing ? thawingRemaining : total);
-		freezingEntity.setDewar(getString(values.get("dewar")));
-		freezingEntity.setCanister(getString(values.get("canisterNo")));
 		freezingEntity.setNotes(getNotes(type, values));
 
 		freezingRepository.save(freezingEntity);
 	}
 
-	private String getFreezingType(String procedureTypeName) {
+	private String getFreezingType(String procedureTypeName, Map<String, Object> values) {
 
 		if (procedureTypeName == null) {
 			return null;
 		}
 
-		if (procedureTypeName.equalsIgnoreCase("Egg Freezing")) {
-			return "EGG";
-		}
+		if (procedureTypeName.equalsIgnoreCase("Oocyte Pick-Up (OPU)")) {
 
-		if (procedureTypeName.equalsIgnoreCase("Embryo Freezing")) {
-			return "EMBRYO";
+			boolean hasOocytes = getListSize(values, "oocyteRows") > 0;
+			boolean hasEmbryos = getListSize(values, "embryoRows") > 0;
+
+			if (hasOocytes && hasEmbryos) {
+				return "BOTH";
+			}
+
+			if (hasOocytes) {
+				return "EGG";
+			}
+
+			if (hasEmbryos) {
+				return "EMBRYO";
+			}
+
+			return null;
 		}
 
 		if (procedureTypeName.equalsIgnoreCase("Sperm Freezing")) {
@@ -543,7 +589,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 	private Long getThawingRemaining(String type, Map<String, Object> values) {
 
 		if ("EGG".equals(type)) {
-			return getLastRemainingOrNull(values, "thawingRows", "remainingOocytes");
+			return getLastRemainingOrNull(values, "oocyteThawingRows", "remainingOocytes");
 		}
 
 		if ("EMBRYO".equals(type)) {
@@ -551,7 +597,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 		}
 
 		if ("SPERM".equals(type)) {
-			return getLastRemainingOrNull(values, "thawingRows", "remainingAmpoules");
+			return getLastRemainingOrNull(values, "spermThawingRows", "remainingAmpoules");
 		}
 
 		if ("OVARIAN_TISSUE".equals(type)) {
@@ -654,8 +700,12 @@ public class ProcedureServiceImpl implements ProcedureService {
 
 	private String getNotes(String type, Map<String, Object> values) {
 
-		if ("EGG".equals(type) || "SPERM".equals(type)) {
-			return getNotesFromRows(values, "thawingRows");
+		if ("EGG".equals(type)) {
+			return getNotesFromRows(values, "oocyteFertilizationRows");
+		}
+
+		if ("SPERM".equals(type)) {
+			return getNotesFromRows(values, "spermThawingRows");
 		}
 
 		if ("EMBRYO".equals(type)) {
