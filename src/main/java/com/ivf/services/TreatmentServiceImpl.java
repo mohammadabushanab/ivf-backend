@@ -38,6 +38,8 @@ public class TreatmentServiceImpl implements TreatmentService {
 
 	@Override
 	public List<TreatmentDTO> findBySearchCriteria(TreatmentDTO treatmentDTO) {
+		
+		System.out.println(treatmentDTO);
 
 		StringBuilder sql = new StringBuilder("SELECT treatments.* FROM treatments ");
 
@@ -49,9 +51,15 @@ public class TreatmentServiceImpl implements TreatmentService {
 		Map<String, Object> params = new HashMap<String, Object>();
 
 		if (treatmentDTO.getId() != null) {
-			sql.append("AND treatment.id = :id ");
+			sql.append("AND treatments.id = :id ");
 
 			params.put("id", treatmentDTO.getId());
+		}
+		
+		if (treatmentDTO.getStatus() != null && !treatmentDTO.getStatus().isEmpty()) {
+			sql.append("AND treatments.status != :status ");
+
+			params.put("status", treatmentDTO.getStatus());
 		}
 
 		Query query = entityManager.createNativeQuery(sql.toString(), TreatmentEntity.class);
@@ -65,7 +73,7 @@ public class TreatmentServiceImpl implements TreatmentService {
 		List<TreatmentDTO> treatmentDTOs = new ArrayList<TreatmentDTO>();
 
 		if (treatmentEntities != null) {
-			for (TreatmentEntity treatmentEntity : treatmentEntities) {
+			for (TreatmentEntity treatmentEntity : treatmentEntities) {				
 				treatmentDTOs.add(mapToDTO(treatmentEntity));
 			}
 		}
@@ -74,12 +82,16 @@ public class TreatmentServiceImpl implements TreatmentService {
 	}
 
 	public TreatmentDTO add(TreatmentDTO treatmentDTO) {
+		
+		System.out.println(treatmentDTO);
 
 		TreatmentEntity entity = mapToEntity(treatmentDTO);
 
 		TreatmentEntity saved = treatmentRepository.save(entity);
 
 		TreatmentDTO savedDTO = mapToDTO(saved);
+		
+		System.out.println(savedDTO);
 
 		messagingTemplate.convertAndSend("/topic/treatments", savedDTO);
 
@@ -93,6 +105,7 @@ public class TreatmentServiceImpl implements TreatmentService {
 
 		entity.setType(treatmentDTO.getType());
 		entity.setValues(treatmentDTO.getValues());
+		entity.setStatus(treatmentDTO.getStatus());
 
 		if (treatmentDTO.getPatientDTO() != null) {
 
@@ -134,6 +147,7 @@ public class TreatmentServiceImpl implements TreatmentService {
 		treatmentDTO.setId(treatmentEntity.getId());
 		treatmentDTO.setType(treatmentEntity.getType());
 		treatmentDTO.setValues(treatmentEntity.getValues());
+		treatmentDTO.setStatus(treatmentEntity.getStatus());
 		treatmentDTO.setCreatedDate(treatmentEntity.getCreatedDate());
 		treatmentDTO.setModifiedDate(treatmentEntity.getModifiedDate());
 
@@ -177,12 +191,13 @@ public class TreatmentServiceImpl implements TreatmentService {
 
 		treatmentEntity.setType(treatmentDTO.getType());
 		treatmentEntity.setValues(treatmentDTO.getValues());
+		treatmentEntity.setStatus(treatmentDTO.getStatus());
 
 		if (treatmentDTO.getPatientDTO() != null && treatmentDTO.getPatientDTO().getId() != null) {
 
 			PatientEntity patientEntity = new PatientEntity();
-
-			patientEntity.setId(treatmentDTO.getPatientDTO().getId());
+			
+			patientEntity = patientRepository.findById(treatmentDTO.getPatientDTO().getId()).orElse(null);
 
 			treatmentEntity.setPatientEntity(patientEntity);
 		}

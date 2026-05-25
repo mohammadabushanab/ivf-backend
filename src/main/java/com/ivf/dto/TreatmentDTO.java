@@ -17,6 +17,8 @@ public class TreatmentDTO {
 
 	private LocalDateTime modifiedDate;
 
+	private String status;
+
 	private boolean isDeleted;
 
 	@JsonProperty("patient")
@@ -78,10 +80,19 @@ public class TreatmentDTO {
 		this.isDeleted = isDeleted;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "TreatmentDTO [id=" + id + ", values=" + values + ", type=" + type + ", createdDate=" + createdDate
-				+ ", modifiedDate=" + modifiedDate + ", isDeleted=" + isDeleted + ", patientDTO=" + patientDTO + "]";
+				+ ", modifiedDate=" + modifiedDate + ", status=" + status + ", isDeleted=" + isDeleted + ", patientDTO="
+				+ patientDTO + "]";
 	}
 
 }

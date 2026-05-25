@@ -52,6 +52,12 @@ public class OPUServiceImpl implements OPUService {
 
 			params.put("id", opuDTO.getId());
 		}
+		
+		if (opuDTO.getStatus() != null && !opuDTO.getStatus().isEmpty()) {
+			sql.append("AND opus.status != :status ");
+
+			params.put("status", opuDTO.getStatus());
+		}
 
 		Query query = entityManager.createNativeQuery(sql.toString(), OPUEntity.class);
 
@@ -182,8 +188,8 @@ public class OPUServiceImpl implements OPUService {
 		if (opuDTO.getPatientDTO() != null && opuDTO.getPatientDTO().getId() != null) {
 
 			PatientEntity patientEntity = new PatientEntity();
-
-			patientEntity.setId(opuDTO.getPatientDTO().getId());
+			
+			patientEntity = patientRepository.findById(opuDTO.getPatientDTO().getId()).orElse(null);
 
 			opuEntity.setPatientEntity(patientEntity);
 		}
