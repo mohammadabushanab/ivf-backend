@@ -191,7 +191,9 @@ public class ProcedureServiceImpl implements ProcedureService {
 
 		ProcedureEntity saved = procedureRepository.save(entity);
 
-		saveOrUpdateFreezing(saved);
+		if(procedureDTO.getStatus().equals("Completed")) {
+			saveOrUpdateFreezing(saved);
+		}		
 
 		return mapToDTO(saved);
 	}
@@ -242,7 +244,9 @@ public class ProcedureServiceImpl implements ProcedureService {
 
 		ProcedureEntity updated = procedureRepository.save(entity);
 
-		saveOrUpdateFreezing(updated);
+		if(procedureDTO.getStatus().equals("Completed")) {
+			saveOrUpdateFreezing(updated);
+		}	
 
 		return mapToDTO(updated);
 	}
