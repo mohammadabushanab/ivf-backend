@@ -22,6 +22,11 @@ public class ProcedureController {
 	
 	@Autowired
 	private ProcedureService procedureService;
+	
+	@GetMapping("/find-total")
+	public ResponseEntity<Long> findTotal() {
+		return ResponseEntity.ok(procedureService.findTotal());
+	}
 
 	@GetMapping("/find-procedures-count-by-type")
 	public ResponseEntity<List<ProcedureCountDTO>> findProceduresCountByType() {
